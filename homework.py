@@ -1,15 +1,16 @@
 class InfoMessage:
     def __init__(self,
-                           training_type: str,
-                           duration: float,
-                           distance: float,
-                           speed: float,
-                           calories: float) -> None:
+                 training_type: str,
+                 duration: float,
+                 distance: float,
+                 speed: float,
+                 calories: float
+                ) -> None:
         self.training_type = training_type
         self.duration = duration
         self.distance = distance
         self.speed = speed
-        self.calories = calories 
+        self.calories = calories
     def get_message(self) -> str:
         return (f'Тип тренировки: {self.training_type}; '
                 f'Длительность: {self.duration:.3f} ч.; '
@@ -67,7 +68,7 @@ class Running(Training):
     def __init__(self,
                  action: int,
                  duration: float,
-                 weight: float,
+                 weight: float
                  ) -> None:
         super().__init__(action, duration, weight)
     def get_spent_calories(self) -> float:
