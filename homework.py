@@ -1,3 +1,6 @@
+from typing import Any, List
+
+
 class InfoMessage:
     def __init__(self,
                  training_type: str,
@@ -23,6 +26,7 @@ class InfoMessage:
 class Training:
     LEN_STEP: float = 0.65
     M_IN_KM: int = 1000
+    MINS_IN_HOUR: int = 60
 
     def __init__(self,
                  action: int,
@@ -57,8 +61,8 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
-    TRAINING_TYPE = 'RUN'
-    M_IN_H: int = 60
+    k1: float = 18
+    k2: float = 20
 
     def __init__(self,
                  action: int,
@@ -68,16 +72,16 @@ class Running(Training):
         super().__init__(action, duration, weight)
 
     def get_spent_calories(self) -> float:
-        cal_1 = 18 * self.get_mean_speed() - 20
+        cal_1 = self.k1 * self.get_mean_speed() - self.k2
         cal_2 = cal_1 * self.weight / self.M_IN_KM
-        calories = cal_2 * (self.duration * self.M_IN_H)
+        calories = cal_2 * (self.duration * self.MINS_IN_HOUR)
         return calories
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    TRAINING_TYPE = 'WLK'
-    M_IN_H: int = 60
+    cf_c_1: float = 0.035
+    cf_c_2: float = 0.029
 
     def __init__(self,
                  action: int,
@@ -89,19 +93,18 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        cf_c_1 = 0.035
-        cf_c_2 = 0.029
-        calories_1 = cf_c_1 * self.weight
-        calories_2 = self.get_mean_speed()**2 // self.height
-        calories_3 = calories_2 * cf_c_2 * self.weight
-        calories = (calories_1 + calories_3) * self.duration * self.M_IN_H
+        cal_1 = self.cf_c_1 * self.weight
+        cal_2 = self.get_mean_speed()**2 // self.height
+        cal_3 = cal_2 * self.cf_c_2 * self.weight
+        calories = (cal_1 + cal_3) * self.duration * self.MINS_IN_HOUR
         return calories
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP: float = 1.38
-    TRAINING_TYPE = 'SWM'
+    a1: float = 1.1
+    a2: int = 2
 
     def __init__(self,
                  action: int,
@@ -120,11 +123,11 @@ class Swimming(Training):
         return mean_speed
 
     def get_spent_calories(self) -> float:
-        calories = (self.get_mean_speed() + 1.1) * 2 * self.weight
+        calories = (self.get_mean_speed() + self.a1) * self.a2 * self.weight
         return calories
 
 
-def read_package(workout_type: str, data: list = [str]) -> Training:
+def read_package(workout_type: str, data: List[Any]) -> Training:
     """Прочитать данные полученные от датчиков."""
     variants_training = {
         'SWM': Swimming,
