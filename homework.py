@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import List, Union
 
 
 class InfoMessage:
@@ -61,8 +61,8 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
-    k1: float = 18
-    k2: float = 20
+    K1: int = 18
+    K2: int = 20
 
     def __init__(self,
                  action: int,
@@ -72,7 +72,7 @@ class Running(Training):
         super().__init__(action, duration, weight)
 
     def get_spent_calories(self) -> float:
-        cal_1 = self.k1 * self.get_mean_speed() - self.k2
+        cal_1 = self.K1 * self.get_mean_speed() - self.K2
         cal_2 = cal_1 * self.weight / self.M_IN_KM
         calories = cal_2 * (self.duration * self.MINS_IN_HOUR)
         return calories
@@ -80,8 +80,8 @@ class Running(Training):
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    cf_c_1: float = 0.035
-    cf_c_2: float = 0.029
+    CF_C_1: float = 0.035
+    CF_C_2: float = 0.029
 
     def __init__(self,
                  action: int,
@@ -93,9 +93,9 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        cal_1 = self.cf_c_1 * self.weight
+        cal_1 = self.CF_C_1 * self.weight
         cal_2 = self.get_mean_speed()**2 // self.height
-        cal_3 = cal_2 * self.cf_c_2 * self.weight
+        cal_3 = cal_2 * self.CF_C_2 * self.weight
         calories = (cal_1 + cal_3) * self.duration * self.MINS_IN_HOUR
         return calories
 
@@ -103,8 +103,8 @@ class SportsWalking(Training):
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP: float = 1.38
-    a1: float = 1.1
-    a2: int = 2
+    A1: float = 1.1
+    A2: int = 2
 
     def __init__(self,
                  action: int,
@@ -123,11 +123,11 @@ class Swimming(Training):
         return mean_speed
 
     def get_spent_calories(self) -> float:
-        calories = (self.get_mean_speed() + self.a1) * self.a2 * self.weight
+        calories = (self.get_mean_speed() + self.A1) * self.A2 * self.weight
         return calories
 
 
-def read_package(workout_type: str, data: List[Any]) -> Training:
+def read_package(workout_type: str, data: List[Union[int, float]]) -> Training:
     """Прочитать данные полученные от датчиков."""
     variants_training = {
         'SWM': Swimming,
